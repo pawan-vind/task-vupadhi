@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/utils/app_function.dart';
-import 'api_endpoints.dart';
+import '../utils/app_function.dart';
+import '../constants/api_endpoints.dart';
 import 'dio_network_exceptions_manager.dart';
 
 class DioClient {

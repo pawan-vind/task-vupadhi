@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'dart:io';
 
-import '../../model/response_common_model.dart';
+import 'response_common_model.dart';
 
 class DioNetworkExceptionsManager {
   static String getDioException(error) {

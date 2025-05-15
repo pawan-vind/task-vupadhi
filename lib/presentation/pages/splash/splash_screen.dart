@@ -7,13 +7,12 @@ import 'package:task/core/constants/images.dart';
 import 'package:task/data/repositery/shared_preferences/shared_preferences_keys.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../di/di.dart';
 import '../../../core/routes/app_router.dart';
 import '../../../core/utils/encript_utils.dart';
 import '../../../core/utils/hash_utils.dart';
 import '../../../data/repositery/shared_preferences/shared_preferences_repo.dart';
-import '../../bloc/sign_up_bloc/sign_in_bloc.dart';
-import '../../bloc/sign_up_bloc/sign_in_state.dart';
+import '../../../common/bloc/sign_up_bloc/sign_in_bloc.dart';
+import '../../../common/bloc/sign_up_bloc/sign_in_state.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,7 +28,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    _signInBloc = getIt<SignInBloc>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final encryptedToken = SharedPreferencesRepo.getData(key: SpKeys.token);
