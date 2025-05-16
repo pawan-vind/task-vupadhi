@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/utils/app_function.dart';
-import '../../model/user_model.dart';
+import '../../../common/model/user_model.dart';
 
 class SharedPreferencesRepo {
   static late SharedPreferences _prefs;

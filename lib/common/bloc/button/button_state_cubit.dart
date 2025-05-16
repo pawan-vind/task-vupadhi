@@ -9,7 +9,7 @@ import '../../../core/utils/app_function.dart';
 import '../../../core/utils/encript_utils.dart';
 import '../../../core/utils/hash_utils.dart';
 import '../../../data/model/login_params.dart';
-import '../../../data/model/user_model.dart';
+import '../../model/user_model.dart';
 import '../../../data/repositery/shared_preferences/shared_preferences_keys.dart';
 import '../../../data/repositery/shared_preferences/shared_preferences_repo.dart';
 
@@ -21,14 +21,12 @@ class ButtonStateCubit extends Cubit<ButtonState> {
     required bool rememberMe,
     required UseCaes usecases,
   }) async {
-    emit(ButtonLoadingState());
-
-    print("ddsfdsf");
-    print(rememberMe);
+    if (!isClosed) emit(ButtonLoadingState());
 
     try {
       final salt = HashUtils.generateSalt();
-      final finalPassword = HashUtils.generateFinalPassword(params.password, salt);
+      final finalPassword =
+          HashUtils.generateFinalPassword(params.password, salt);
 
       final Either result = await usecases.call(
         param: LoginParams(
@@ -41,7 +39,9 @@ class ButtonStateCubit extends Cubit<ButtonState> {
 
       result.fold(
         (error) {
-          emit(ButtonfailureState(errorMessage: error.toString()));
+          if (!isClosed) {
+            emit(ButtonfailureState(errorMessage: error.toString()));
+          }
         },
         (response) async {
           if (response['status'] == "success") {
@@ -53,7 +53,6 @@ class ButtonStateCubit extends Cubit<ButtonState> {
             );
 
             if (rememberMe) {
-              print("yha aaya ky");
               final rememberSalt = HashUtils.generateSalt();
 
               final tokenPayload = jsonEncode({
@@ -70,9 +69,11 @@ class ButtonStateCubit extends Cubit<ButtonState> {
               );
             }
 
-            emit(ButtonSuccessState());
+            if (!isClosed) emit(ButtonSuccessState());
           } else {
-            emit(ButtonfailureState(errorMessage: "Invalid credentials"));
+            if (!isClosed) {
+              emit(ButtonfailureState(errorMessage: "Invalid credentials"));
+            }
           }
         },
       );

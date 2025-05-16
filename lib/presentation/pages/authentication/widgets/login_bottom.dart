@@ -7,7 +7,6 @@ import 'package:task/domain/usecases/login_usecase.dart';
 import 'package:task/service_locator.dart';
 
 import '../../../../common/bloc/login/login_state_cubit.dart';
-import '../../../../common/bloc/sign_up_bloc/sign_in_bloc.dart';
 import '../../../../core/constants/teststyling.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/utils/toast_messagner.dart';
@@ -28,51 +27,43 @@ class LoginBottomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        // BlocProvider(create: (_) => getIt<LoginCubit>()),
-        BlocProvider(create: (_) => sl<LoginCubit>()),
-        BlocProvider(create: (_) => sl<ButtonStateCubit>()),
-      ],
-      child: BlocListener<ButtonStateCubit, ButtonState>(
-        listener: (context, state) {
-          if (state is ButtonSuccessState) {
-            Navigator.pushReplacementNamed(
-              context,
-              RouteNames.homeScreen,
+    return BlocListener<ButtonStateCubit, ButtonState>(
+      listener: (context, state) {
+        if (state is ButtonSuccessState) {
+          Navigator.pushReplacementNamed(
+            context,
+            RouteNames.homeScreen,
+          );
+        }
+        if (state is ButtonfailureState) {
+          ToastMessenger.showErrorToast(
+              context: context, message: state.errorMessage);
+        }
+      },
+      child: BlocBuilder<ButtonStateCubit, ButtonState>(
+        builder: (context, state) {
+          if (state is ButtonLoadingState) {
+            return _loading();
+          } else {
+            return _initial(
+              () {
+                if (_formKey.currentState!.validate()) {
+                  context.read<ButtonStateCubit>().execute(
+                        rememberMe:
+                            context.read<LoginCubit>().state.rememberMe,
+                        usecases: sl<LoginUsecase>(),
+                        params: LoginParams(
+                          userName: _usernameController.text,
+                          password: _passwordController.text,
+                          usedsalt: "34343",
+                          lang: "en",
+                        ),
+                      );
+                }
+              },
             );
           }
-          if (state is ButtonfailureState) {
-            ToastMessenger.showErrorToast(
-                context: context, message: state.errorMessage);
-          }
         },
-        child: BlocBuilder<ButtonStateCubit, ButtonState>(
-          builder: (context, state) {
-            if (state is ButtonLoadingState) {
-              return _loading();
-            } else {
-              return _initial(
-                () {
-                  print(context.read<LoginCubit>().state.rememberMe);
-                  if (_formKey.currentState!.validate()) {
-                    context.read<ButtonStateCubit>().execute(
-                          rememberMe:
-                              context.watch<LoginCubit>().state.rememberMe,
-                          usecases: sl<LoginUsecase>(),
-                          params: LoginParams(
-                            userName: _usernameController.text,
-                            password: _passwordController.text,
-                            usedsalt: "34343",
-                            lang: "en",
-                          ),
-                        );
-                  }
-                },
-              );
-            }
-          },
-        ),
       ),
     );
   }

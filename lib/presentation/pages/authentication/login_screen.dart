@@ -24,10 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // BlocProvider(create: (_) => getIt<LoginCubit>()),
         BlocProvider(create: (_) => sl<LoginCubit>()),
         BlocProvider(create: (_) => sl<ButtonStateCubit>()),
-        BlocProvider(create: (_) => sl<LoginCubit>()),
       ],
       child: Scaffold(
         backgroundColor: AppColors.white,
